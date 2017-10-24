@@ -29,7 +29,6 @@ int main (int argc, char const *argv[])
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
   LLVMDisposeMessage(error);
 
-
   LLVMExecutionEngineRef engine;
   error = NULL;
   if(LLVMCreateJITCompilerForModule(&engine, mod, 2, &error) != 0) {
@@ -38,23 +37,14 @@ int main (int argc, char const *argv[])
     abort();
   }
 
-  LLVMPassManagerRef pass = LLVMCreatePassManager();
-  LLVMAddConstantPropagationPass(pass);
-  LLVMAddInstructionCombiningPass(pass);
-  LLVMAddPromoteMemoryToRegisterPass(pass);
-  LLVMAddDemoteMemoryToRegisterPass(pass);
-  LLVMAddGVNPass(pass);
-  LLVMAddCFGSimplificationPass(pass);
-  LLVMRunPassManager(pass, mod);
   LLVMDumpModule(mod);
 
-  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfInt(LLVMInt32Type(), 10, 0)};
+  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfInt(LLVMInt32Type(), 42, 0)};
   LLVMGenericValueRef exec_res = LLVMRunFunction(engine, identity, 1, exec_args);
   fprintf(stderr, "\n");
   fprintf(stderr, "; Running identity(42) with JIT...\n");
   fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
 
-  LLVMDisposePassManager(pass);
   LLVMDisposeBuilder(builder);
   LLVMDisposeExecutionEngine(engine);
   return 0;
