@@ -52,7 +52,6 @@ int main (int argc, char const *argv[])
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
   LLVMDisposeMessage(error);
 
-
   LLVMExecutionEngineRef engine;
   error = NULL;
   if(LLVMCreateJITCompilerForModule(&engine, mod, 2, &error) != 0) {
