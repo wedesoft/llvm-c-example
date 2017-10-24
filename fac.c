@@ -1,4 +1,5 @@
-// Headers required by LLVM
+#include <stdlib.h>
+#include <stdio.h>
 #include <llvm-c/Core.h>
 #include <llvm-c/Analysis.h>
 #include <llvm-c/ExecutionEngine.h>
@@ -6,16 +7,14 @@
 #include <llvm-c/Transforms/Scalar.h>
 
 
-// General stuff
-#include <stdlib.h>
-#include <stdio.h>
-
-
 int main (int argc, char const *argv[])
 {
-  char *error = NULL; // Used to retrieve messages from functions
-  LLVMLinkInJIT();
+  char *error = NULL;
+  LLVMLinkInMCJIT();
   LLVMInitializeNativeTarget();
+  LLVMInitializeNativeAsmPrinter();
+  LLVMInitializeNativeAsmParser();
+
   LLVMModuleRef mod = LLVMModuleCreateWithName("fac_module");
   LLVMTypeRef fac_args[] = { LLVMInt32Type() };
   LLVMValueRef fac = LLVMAddFunction(mod, "fac", LLVMFunctionType(LLVMInt32Type(), fac_args, 1, 0));
@@ -51,24 +50,22 @@ int main (int argc, char const *argv[])
   LLVMBuildRet(builder, res);
 
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
-  LLVMDisposeMessage(error); // Handler == LLVMAbortProcessAction -> No need to check errors
+  LLVMDisposeMessage(error);
 
 
   LLVMExecutionEngineRef engine;
-  LLVMModuleProviderRef provider = LLVMCreateModuleProviderForExistingModule(mod);
   error = NULL;
-  if(LLVMCreateJITCompiler(&engine, provider, 2, &error) != 0) {
+  if(LLVMCreateJITCompilerForModule(&engine, mod, 2, &error) != 0) {
     fprintf(stderr, "%s\n", error);
     LLVMDisposeMessage(error);
     abort();
   }
 
   LLVMPassManagerRef pass = LLVMCreatePassManager();
-  LLVMAddTargetData(LLVMGetExecutionEngineTargetData(engine), pass);
   LLVMAddConstantPropagationPass(pass);
   LLVMAddInstructionCombiningPass(pass);
   LLVMAddPromoteMemoryToRegisterPass(pass);
-  // LLVMAddDemoteMemoryToRegisterPass(pass); // Demotes every possible value to memory
+  LLVMAddDemoteMemoryToRegisterPass(pass);
   LLVMAddGVNPass(pass);
   LLVMAddCFGSimplificationPass(pass);
   LLVMRunPassManager(pass, mod);
@@ -78,11 +75,10 @@ int main (int argc, char const *argv[])
   LLVMGenericValueRef exec_res = LLVMRunFunction(engine, fac, 1, exec_args);
   fprintf(stderr, "\n");
   fprintf(stderr, "; Running fac(10) with JIT...\n");
-  fprintf(stderr, "; Result: %d\n", LLVMGenericValueToInt(exec_res, 0));
+  fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
 
   LLVMDisposePassManager(pass);
   LLVMDisposeBuilder(builder);
   LLVMDisposeExecutionEngine(engine);
   return 0;
 }
-

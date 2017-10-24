@@ -1,14 +1,15 @@
-CC=gcc
-CFLAGS=`llvm-config --cflags`
-LD=g++
-LDFLAGS=`llvm-config --libs --cflags --ldflags core analysis executionengine jit interpreter native`
+CC?=gcc
+LLVM_CONFIG=llvm-config-3.9
+CFLAGS=$(shell $(LLVM_CONFIG) --cflags)
+LDFLAGS=$(shell $(LLVM_CONFIG) --libs --cflags --ldflags orcjit)
 
 fac: fac.o
-	$(LD) fac.o $(LDFLAGS) -o fac
+	$(CC) fac.o $(LDFLAGS) -o $@
 
-fac.o: fac.c
-	$(CC) $(CFLAGS) -c fac.c
+.c.o:
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -rf fac.o fac
+
 .PHONY: clean
