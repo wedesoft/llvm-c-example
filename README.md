@@ -7,5 +7,3 @@ versions of LLVM and includes a Makefile.
 
 fac.c builds up a representation of a factorial function piece-by-piece, adds
 optimization passes to the function, then executes it with LLVM's JIT.
-
-<!-- vim: set tw=80: -->
