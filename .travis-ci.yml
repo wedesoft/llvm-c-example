@@ -1,0 +1,11 @@
+sudo: required
+dist: xenial
+language: c
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get install llvm-3.9-dev
+install:
+  - make
+script:
+  - ./fac
