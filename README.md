@@ -1,3 +1,5 @@
+# llvm-c-example[![](https://travis-ci.org/wedesoft/llvm-c-example.svg?branch=master)](https://travis-ci.org/wedesoft/llvm-c-example/)
+
 An example program showing off usage of LLVM's C bindings.
 
 This is a github repo of @ynd's
