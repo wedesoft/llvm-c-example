@@ -6,11 +6,6 @@
 #include <llvm-c/Target.h>
 #include <llvm-c/Transforms/Scalar.h>
 
-// https://github.com/wickedchicken/llvm-c-example/blob/master/fac.c
-// https://www.doof.me.uk/2017/05/11/using-orc-with-llvms-c-api/
-// https://github.com/bamboo/libguile-llvm/
-// https://msm.runhello.com/p/1003
-
 
 int main (int argc, char const *argv[])
 {
