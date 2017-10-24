@@ -65,7 +65,7 @@ int main (int argc, char const *argv[])
   LLVMAddConstantPropagationPass(pass);
   LLVMAddInstructionCombiningPass(pass);
   LLVMAddPromoteMemoryToRegisterPass(pass);
-  LLVMAddDemoteMemoryToRegisterPass(pass);
+  // LLVMAddDemoteMemoryToRegisterPass(pass);
   LLVMAddGVNPass(pass);
   LLVMAddCFGSimplificationPass(pass);
   LLVMRunPassManager(pass, mod);
