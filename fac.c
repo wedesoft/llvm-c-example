@@ -77,7 +77,9 @@ int main (int argc, char const *argv[])
   fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
 
   LLVMDisposePassManager(pass);
-  LLVMDisposeBuilder(builder);
+  LLVMRemoveModule(engine, mod, &mod, &error);
+  LLVMDisposeModule(mod);
   LLVMDisposeExecutionEngine(engine);
+  LLVMDisposeBuilder(builder);
   return 0;
 }

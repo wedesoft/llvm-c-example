@@ -45,7 +45,9 @@ int main (int argc, char const *argv[])
   fprintf(stderr, "; Running identity(42) with JIT...\n");
   fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
 
-  LLVMDisposeBuilder(builder);
+  LLVMRemoveModule(engine, mod, &mod, &error);
+  LLVMDisposeModule(mod);
   LLVMDisposeExecutionEngine(engine);
+  LLVMDisposeBuilder(builder);
   return 0;
 }
