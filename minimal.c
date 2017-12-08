@@ -36,14 +36,13 @@ int main (int argc, char const *argv[])
     LLVMDisposeMessage(error);
     abort();
   }
+  int (*fun)(int) = (int (*)(int))LLVMGetFunctionAddress(engine, "identity");
 
   LLVMDumpModule(mod);
 
-  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfInt(LLVMInt32Type(), 42, 0)};
-  LLVMGenericValueRef exec_res = LLVMRunFunction(engine, identity, 1, exec_args);
   fprintf(stderr, "\n");
   fprintf(stderr, "; Running identity(42) with JIT...\n");
-  fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
+  fprintf(stderr, "; Result: %d\n", (*fun)(42));
 
   LLVMRemoveModule(engine, mod, &mod, &error);
   LLVMDisposeModule(mod);
