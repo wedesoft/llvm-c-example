@@ -16,8 +16,8 @@ int main (int argc, char const *argv[])
   LLVMInitializeNativeAsmParser();
 
   LLVMModuleRef mod = LLVMModuleCreateWithName("minimal_module");
-  LLVMTypeRef identity_args[] = { LLVMInt32Type() };
-  LLVMValueRef identity = LLVMAddFunction(mod, "identity", LLVMFunctionType(LLVMInt32Type(), identity_args, 1, 0));
+  LLVMTypeRef identity_args[] = { LLVMDoubleType() };
+  LLVMValueRef identity = LLVMAddFunction(mod, "identity", LLVMFunctionType(LLVMDoubleType(), identity_args, 1, 0));
   LLVMSetFunctionCallConv(identity, LLVMCCallConv);
   LLVMValueRef n = LLVMGetParam(identity, 0);
 
@@ -39,11 +39,11 @@ int main (int argc, char const *argv[])
 
   LLVMDumpModule(mod);
 
-  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfInt(LLVMInt32Type(), 42, 0)};
+  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfFloat(LLVMDoubleType(), 1.25)};
   LLVMGenericValueRef exec_res = LLVMRunFunction(engine, identity, 1, exec_args);
   fprintf(stderr, "\n");
-  fprintf(stderr, "; Running identity(42) with JIT...\n");
-  fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
+  fprintf(stderr, "; Running identity(%f) with JIT...\n", 1.25);
+  fprintf(stderr, "; Result: %f\n", LLVMGenericValueToFloat(LLVMDoubleType(), exec_res));
 
   LLVMRemoveModule(engine, mod, &mod, &error);
   LLVMDisposeModule(mod);
