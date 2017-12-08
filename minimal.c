@@ -35,15 +35,13 @@ int main (int argc, char const *argv[])
     fprintf(stderr, "%s\n", error);
     LLVMDisposeMessage(error);
     abort();
-  }
+  };
+  double (*fun)(double) = (double (*)(double))LLVMGetFunctionAddress(engine, "identity");
 
   LLVMDumpModule(mod);
-
-  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfFloat(LLVMDoubleType(), 1.25)};
-  LLVMGenericValueRef exec_res = LLVMRunFunction(engine, identity, 1, exec_args);
   fprintf(stderr, "\n");
   fprintf(stderr, "; Running identity(%f) with JIT...\n", 1.25);
-  fprintf(stderr, "; Result: %f\n", LLVMGenericValueToFloat(LLVMDoubleType(), exec_res));
+  fprintf(stderr, "; Result: %f\n", (*fun)(1.25));
 
   LLVMRemoveModule(engine, mod, &mod, &error);
   LLVMDisposeModule(mod);
