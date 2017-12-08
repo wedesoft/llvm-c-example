@@ -69,12 +69,11 @@ int main (int argc, char const *argv[])
   LLVMAddCFGSimplificationPass(pass);
   LLVMRunPassManager(pass, mod);
   LLVMDumpModule(mod);
+  int (*fac_)(int) = (int (*)(int))LLVMGetFunctionAddress(engine, "fac");
 
-  LLVMGenericValueRef exec_args[] = {LLVMCreateGenericValueOfInt(LLVMInt32Type(), 10, 0)};
-  LLVMGenericValueRef exec_res = LLVMRunFunction(engine, fac, 1, exec_args);
   fprintf(stderr, "\n");
   fprintf(stderr, "; Running fac(10) with JIT...\n");
-  fprintf(stderr, "; Result: %lld\n", LLVMGenericValueToInt(exec_res, 0));
+  fprintf(stderr, "; Result: %d\n", fac_(10));
 
   LLVMDisposePassManager(pass);
   LLVMRemoveModule(engine, mod, &mod, &error);
