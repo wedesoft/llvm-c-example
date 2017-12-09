@@ -16,8 +16,8 @@ int main (int argc, char const *argv[])
   LLVMInitializeNativeAsmParser();
 
   LLVMModuleRef mod = LLVMModuleCreateWithName("minimal_module");
-  LLVMTypeRef identity_args[] = { LLVMInt32Type() };
-  LLVMValueRef identity = LLVMAddFunction(mod, "identity", LLVMFunctionType(LLVMInt32Type(), identity_args, 1, 0));
+  LLVMTypeRef identity_args[] = { LLVMDoubleType() };
+  LLVMValueRef identity = LLVMAddFunction(mod, "identity", LLVMFunctionType(LLVMDoubleType(), identity_args, 1, 0));
   LLVMSetFunctionCallConv(identity, LLVMCCallConv);
   LLVMValueRef n = LLVMGetParam(identity, 0);
 
@@ -35,14 +35,13 @@ int main (int argc, char const *argv[])
     fprintf(stderr, "%s\n", error);
     LLVMDisposeMessage(error);
     abort();
-  }
-  int (*fun)(int) = (int (*)(int))LLVMGetFunctionAddress(engine, "identity");
+  };
+  double (*fun)(double) = (double (*)(double))LLVMGetFunctionAddress(engine, "identity");
 
   LLVMDumpModule(mod);
-
   fprintf(stderr, "\n");
-  fprintf(stderr, "; Running identity(42) with JIT...\n");
-  fprintf(stderr, "; Result: %d\n", (*fun)(42));
+  fprintf(stderr, "; Running identity(%f) with JIT...\n", 1.25);
+  fprintf(stderr, "; Result: %f\n", (*fun)(1.25));
 
   LLVMRemoveModule(engine, mod, &mod, &error);
   LLVMDisposeModule(mod);
