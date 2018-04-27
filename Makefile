@@ -6,10 +6,10 @@ LDFLAGS=$(shell $(LLVM_CONFIG) --libs --cflags --ldflags orcjit)
 all: fac minimal
 
 fac: fac.o
-	$(CC) fac.o $(LDFLAGS) -o $@
+	$(CC) $< $(LDFLAGS) -o $@
 
 minimal: minimal.o
-	$(CC) minimal.o $(LDFLAGS) -o $@
+	$(CC) $< $(LDFLAGS) -o $@
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
