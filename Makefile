@@ -3,7 +3,7 @@ LLVM_CONFIG=llvm-config-3.9
 CFLAGS=$(shell $(LLVM_CONFIG) --cflags)
 LDFLAGS=$(shell $(LLVM_CONFIG) --libs --cflags --ldflags orcjit)
 
-all: fac minimal
+all: fac minimal branch
 
 fac: fac.o
 	$(CC) $< $(LDFLAGS) -o $@
@@ -11,10 +11,13 @@ fac: fac.o
 minimal: minimal.o
 	$(CC) $< $(LDFLAGS) -o $@
 
+branch: branch.o
+	$(CC) $< $(LDFLAGS) -o $@
+
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	-rm -rf *.o fac minimal
+	-rm -rf *.o fac minimal branch
 
 .PHONY: clean

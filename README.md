@@ -47,3 +47,4 @@ end:                                              ; preds = %iffalse, %iftrue
 * [Using ORC with LLCM-C API](https://www.doof.me.uk/2017/05/11/using-orc-with-llvms-c-api/)
 * [bamboo/libguile-llvm](https://github.com/bamboo/libguile-llvm/)
 * [Using LUA and LLVM](https://msm.runhello.com/p/1003)
+* [Adding loops](http://www.duskborn.com/2016/10/)
