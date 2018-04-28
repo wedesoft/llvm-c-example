@@ -23,21 +23,25 @@ int main (int argc, char const *argv[])
   LLVMValueRef n = LLVMGetParam(abs, 0);
 
   LLVMBasicBlockRef entry = LLVMAppendBasicBlock(abs, "entry");
-  LLVMBasicBlockRef if_block = LLVMAppendBasicBlock(abs, "if_block");
-  LLVMBasicBlockRef else_block = LLVMAppendBasicBlock(abs, "else_block");
+  LLVMBasicBlockRef else_block = LLVMAppendBasicBlock(abs, "else");
+  LLVMBasicBlockRef endif_block = LLVMAppendBasicBlock(abs, "endif");
 
   LLVMBuilderRef builder = LLVMCreateBuilder();
   LLVMPositionBuilderAtEnd(builder, entry);
   LLVMValueRef zero = LLVMConstNull(LLVMDoubleType());
   LLVMValueRef cond = LLVMBuildFCmp(builder, LLVMRealOGT, n, zero, "ogt");
-  LLVMBuildCondBr(builder, cond, if_block, else_block);
-
-  LLVMPositionBuilderAtEnd(builder, if_block);
-  LLVMBuildRet(builder, n);
+  LLVMBuildCondBr(builder, cond, endif_block, else_block);
 
   LLVMPositionBuilderAtEnd(builder, else_block);
   LLVMValueRef m = LLVMBuildFNeg(builder, n, "negate");
-  LLVMBuildRet(builder, m);
+  LLVMBuildBr(builder, endif_block);
+
+  LLVMPositionBuilderAtEnd(builder, endif_block);
+  LLVMValueRef result = LLVMBuildPhi(builder, LLVMDoubleType(), "result");
+  LLVMValueRef phi_vals[] = {n, m};
+  LLVMBasicBlockRef phi_blocks[] = {entry, else_block};
+  LLVMAddIncoming(result, phi_vals, phi_blocks, 2);
+  LLVMBuildRet(builder, result);
 
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
   LLVMDisposeMessage(error);

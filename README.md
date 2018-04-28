@@ -48,3 +48,4 @@ end:                                              ; preds = %iffalse, %iftrue
 * [bamboo/libguile-llvm](https://github.com/bamboo/libguile-llvm/)
 * [Using LUA and LLVM](https://msm.runhello.com/p/1003)
 * [Adding loops](http://www.duskborn.com/adding-loops-mpc-llvm-for-the-neil-language-5/) (also see [neilc.c](https://github.com/sheredom/neil/blob/master/neilc.cpp))
+* [The secret of the LLVM-C bindings](http://npcontemplation.blogspot.co.uk/2008/06/secret-of-llvm-c-bindings.html)
