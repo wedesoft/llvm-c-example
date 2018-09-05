@@ -38,9 +38,8 @@ int main (int argc, char const *argv[])
 
   LLVMPositionBuilderAtEnd(builder, endif_block);
   LLVMValueRef result = LLVMBuildPhi(builder, LLVMDoubleType(), "result");
-  LLVMValueRef phi_vals[] = {n, m};
-  LLVMBasicBlockRef phi_blocks[] = {entry, else_block};
-  LLVMAddIncoming(result, phi_vals, phi_blocks, 2);
+  LLVMAddIncoming(result, &n, &entry, 1);
+  LLVMAddIncoming(result, &m, &else_block, 1);
   LLVMBuildRet(builder, result);
 
   LLVMVerifyModule(mod, LLVMAbortProcessAction, &error);
